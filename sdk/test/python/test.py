@@ -1,11 +1,16 @@
 # """
-# If you want to run this test multiple times, 
-# I suggest you delete the existing kv and wal files used.
+# If you want to run this test multiple times,
+# and need the `pass` result,
+# you should delete the existing kv and wal files used.
 # """
 
 
-from wind_kvstore.client import WindKVStore
+# from wind_kvstore.pool import WindKVStore
+# from wind_kvstore.client import WindKVStore
+from wind_kvstore.auto import auto
 import time
+
+WindKVStore = auto("pool")
 
 class TestWindKVStore:
     def test_basic_operations(self):
