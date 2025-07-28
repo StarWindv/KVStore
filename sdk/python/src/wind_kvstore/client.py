@@ -1,120 +1,31 @@
 import json
-import re
 import time
-import warnings
 from typing import List
 
 import requests
 
+from .utils import (
+    format_exec_response,
+    format_exec_put_command,
+    remind
+)
 
-def remind(msg: str)->None:
-    if not msg:
-        raise ValueError(
-            f"The warning msg can not be empty."
-        )
-    warnings.warn(
-        msg,
-        DeprecationWarning,
-        stacklevel=2
-    )
+from ._base import ConnectKV
 
 
-def format_exec_response(response_text: str)->json:
-    cleaned_text = response_text.strip('"').replace('\\"', '"')
-    parts = cleaned_text.split('" "')
-    result = {}
-    for i, part in enumerate(parts, 1):
-        part = part.strip('"')
-        if ': ' in part:
-            cmd_part, msg_part = part.rsplit(': ', 1)
-            cmd = cmd_part.rstrip(';')
-            if i == 1:
-                cmd = cmd.replace('{\"status\":\"\"\\n    ', '').strip()
-            if ": Error" not in cmd:
-                result[f"cmd{i}"] = {
-                    "command": cmd.lstrip(),
-                    "message": msg_part.strip("'")
-                }
-    return json.dumps(result, indent=2)
-
-
-def format_exec_put_command(input_str: str)->str:
-    pattern = r'(PUT\s*"[^"]+")\s*:\s*("[^"]+")'
-    result = re.sub(pattern, r'\1:\2', input_str)
-    return result
-
-
-class _ConnectKV:
-    _DATA_ROUTES = {
-        "GET": "/api/get",
-        "PUT": "/api/put",
-        "DEL": "/api/del"
-    }
-    _KV_ROUTES = {
-        "OPEN": "/api/open",
-        "CLOSE": "/api/close",
-        "CURRENT": "/api/current"
-    }
-    _MANAGEMENT_ROUTES = {
-        "COMPACT": "/api/compact"
-    }
-    _ID_ROUTES = {
-        "GET_ID": "/api/id/get",
-        "SET_ID": "/api/id/set"
-    }
-    _EXEC_ROUTES = {
-        "EXECUTE": "/api/execute"
-    }
-
-    def __init__(self, host: str, port: int):
-        """
-        I recommend that you use more
-        class attributes instead of
-        definitions obtained through _map,
-        as readability is not good
-
-        :param host         : string : server host.
-        :param port         : int    : server port.
-        """
-        self.host = host
-        self.port = port
-        self._map()
-
-    def _map(self):
-        self.get_method = {
-            "CLOSE"  : self._KV_ROUTES["CLOSE"],
-            "CURRENT": self._KV_ROUTES["CURRENT"],
-            "GET"    : self._DATA_ROUTES["GET"],
-            "COMPACT": self._MANAGEMENT_ROUTES["COMPACT"],
-            "GET_ID" : self._ID_ROUTES["GET_ID"]
-        }
-
-        self.post_method = {
-            "OPEN"   : self._KV_ROUTES["OPEN"],
-            "PUT"    : self._DATA_ROUTES["PUT"],
-            "DEL"    : self._DATA_ROUTES["DEL"],
-            "SET_ID" : self._ID_ROUTES["SET_ID"],
-            "EXECUTE": self._EXEC_ROUTES["EXECUTE"]
-        }
-
-
-class _WindKVStoreBase(_ConnectKV):
+class _WindKVStoreBase(ConnectKV):
     def __init__(
             self,
             host: str = "127.0.0.1",
             port: int = 14514,
             kv_path: str = "",
             use_https: bool = False,
-            check_active=True,
-            use_time_to_check_active=False
     ):
         """
         :param host         : string : server host.
         :param port         : int    : server port.
         :param kv_path      : string : the database's path which you want to use.
         :param use_https    : bool   : Whether to enable HTTPS connection.
-        :param check_active : bool   : Check if the database is active before each operation
-        :param use_time_to_check_active: bool: Use timestamps to locally detect whether database sessions are active
         """
         super().__init__(host, port)
         self.session_id = ""
@@ -122,14 +33,7 @@ class _WindKVStoreBase(_ConnectKV):
 
         self.session_start = 0.0
         self.protocol = "https" if use_https else "http"
-        self.check_active = check_active
-        self.use_time_to_check_active = use_time_to_check_active
-        if self.use_time_to_check_active:
-            remind("""
-        When using timestamps for active detection, 
-        database sessions that cannot detect anomalies will be closed. 
-        It is recommended to use the general method.
-        """)
+
 
         if self.kv_path:
             self._open(self, self.kv_path)
@@ -317,6 +221,13 @@ class WindKVStore(_WindKVStoreBase):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
+        # print("closed")
+        if exc_type:
+            print(f"[exc_type]: {repr(exc_type)}")
+            print(f"[exc_val ]: {repr(exc_val)}")
+            print(f"[exc_tb  ]: {repr(exc_tb)}")
+            return False
+        return None
 
     def __init__(
             self,
@@ -328,13 +239,21 @@ class WindKVStore(_WindKVStoreBase):
             use_time_to_check_active=False
     ):
         super().__init__(
-                        host,
-                        port,
-                        kv_path,
-                        use_https,
-                        check_active,
-                        use_time_to_check_active
+            host,
+            port,
+            kv_path,
+            use_https,
         )
+        self.check_active = check_active
+        self.use_time_to_check_active = use_time_to_check_active
+        if self.use_time_to_check_active:
+            remind(
+                """
+                When using timestamps for active detection, 
+                database sessions that cannot detect anomalies will be closed. 
+                It is recommended to use the general method.
+                """
+            )
 
     @staticmethod
     def _check_activate():
