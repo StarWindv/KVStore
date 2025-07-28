@@ -137,17 +137,7 @@ impl KVStore {
 ├── README.md           # Project documentation (English)
 ├── README_CN.md        # Project documentation (Chinese)
 ├── sdk
-│   ├── python          # Wind-KVStore server's sdk for python
-│   │   ├── MANIFEST.in
-│   │   ├── pyproject.toml
-│   │   ├── readme.md
-│   │   ├── readme_cn.md
-│   │   └── src
-│   │       └── wind_kvstore
-│   │           ├── __init__.py
-│   │           ├── client.py         # Client for rust server
-│   │           ├── wind_kvcore.pyd   # This is the link library for the key value storage engine. You can directly operate the local KV in Python without the need for a server
-│   │           └── wind_kvcore.pyi   # Link library doccument
+│   ├── python/         # Wind-KVStore server's sdk for python
 │   └── test/           # Test sdk
 └── src
     ├── config.rs       # Server configuration loader
