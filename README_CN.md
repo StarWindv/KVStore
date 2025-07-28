@@ -137,17 +137,7 @@ impl KVStore {
 ├── README.md           # 项目文档（英文）
 ├── README_CN.md        # 项目文档（中文）
 ├── sdk
-│   ├── python
-│   │   ├── MANIFEST.in
-│   │   ├── pyproject.toml
-│   │   ├── readme.md
-│   │   ├── readme_cn.md
-│   │   └── src
-│   │       └── wind_kvstore
-│   │           ├── __init__.py
-│   │           ├── client.py         # 针对原服务器创建的客户端
-│   │           ├── wind_kvcore.pyd   # 这里是键值存储引擎的链接库，您可以在python直接操作本地kv而无需服务器
-│   │           └── wind_kvcore.pyi   # 链接库文档
+│   ├── python/         # 本项目的python sdk
 │   └── test/           # 针对SDK的测试集
 └── src
     ├── config.rs       # 服务器配置加载器
