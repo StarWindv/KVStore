@@ -10,6 +10,37 @@
 pip install git+https://github.com/StarWindv/Wind-KVStore.git@main#subdirectory=sdk/python
 ```
 
+## 文件结构
+```plaintext
+.
+├── MANIFEST.in
+├── pyproject.toml
+├── readme.md
+├── readme_cn.md
+└── src
+    └── wind_kvstore
+        ├── __init__.py
+        ├── _base.py
+        ├── auto.py
+        ├── client.py
+        ├── pool.py
+        ├── utils.py
+        ├── wind_kvcore.pyd
+        └── wind_kvcore.pyi
+```
+
+## 功能说明
+ - 在文件`client.py`中，我们定义了一个使用`requests`进行直接连接的客户端，而在`pool.py`中则使用`requests.Session()`连接池以优化，两个文件都提供一个类`WindKVStore`，接口完全相同，您可以修改`import`语句以无缝切换到另一实现
+ - 在文件`auto.py`中，我们提供一个函数`auto`，您可以仅导入该函数，随后亦可切换`WindKVStore`的实现方式
+
+```python
+from wind_kvstore.auto import auto
+WindKVStore = auto("client") # 使用`wind_kvstore.client.WindKVStore`
+# 或者
+# WindKVStore = auto("pool") # 使用`wind_kvstore.pool.WindKVStore`
+```
+  当您输入`auto`的参数不正确时，函数会默认选择`wind_kvstore.client.WindKVStore`
+
 ## 快速开始
 
 ```python
