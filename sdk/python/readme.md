@@ -8,6 +8,37 @@ This SDK provides a Python client for interacting with Wind-KVStore servers and 
 pip install git+https://github.com/StarWindv/Wind-KVStore.git@main#subdirectory=sdk/python
 ```
 
+## File Structure
+```plaintext
+.
+├── MANIFEST.in
+├── pyproject.toml
+├── readme.md
+├── readme_cn.md
+└── src
+    └── wind_kvstore
+        ├── __init__.py
+        ├── _base.py
+        ├── auto.py
+        ├── client.py
+        ├── pool.py
+        ├── utils.py
+        ├── wind_kvcore.pyd
+        └── wind_kvcore.pyi
+```
+
+## Function Description
+- In the file 'client. py', we define a client that uses' requests' for direct connection, while in 'pool. py', we use 'requests. Session()' to optimize the connection pool. Both files provide a class' WindKVStore 'with identical interfaces, and you can modify the' import 'statement to seamlessly switch to another implementation
+- In the file 'auto. py', we provide a function 'auto' that you can import only and then switch the implementation of 'WindKVStore'
+
+```python
+from wind_kvstore.auto import auto
+WindKVStore=auto("client") # Use`wind_kvstore.client.WindKVStore`
+#or
+#WindKVStore=auto("pool") # Use`wind_kvstore.pool-WindKVStore '`
+```
+  When you enter an incorrect parameter for 'auto', the function will default to 'wind_kvstore. client. WindKVStore'`
+
 ## Quick Start
 
 ```python
