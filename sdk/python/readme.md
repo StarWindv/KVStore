@@ -37,7 +37,7 @@ WindKVStore=auto("client") # Use`wind_kvstore.client.WindKVStore`
 #or
 #WindKVStore=auto("pool") # Use`wind_kvstore.pool-WindKVStore '`
 ```
-  When you enter an incorrect parameter for 'auto', the function will default to 'wind_kvstore. client. WindKVStore'`
+  When you enter an incorrect parameter for `auto`, the function will default to `wind_kvstore.client.WindKVStore`
 
 ## Quick Start
 
