@@ -48,6 +48,9 @@ cargo run --bin server --release
 ## 🖥️ Server Guide
 [Server Documentation](https://github.com/starwindv/wind-kvstore/blob/main/doc/readme_server.md)
 
+## 📁 SDK Support
+[SDK Repository](https://github.com/StarWindv/Wind-KVStore/tree/main/sdk)
+
 ## 📦 Using as a Library
 
 ### Add Dependency
