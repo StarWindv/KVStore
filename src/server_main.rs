@@ -15,6 +15,7 @@ async fn main() -> Result<()> {
         eprintln!(" * Server has exited.");
         std::process::exit(1);
     }
-    println!(" * Server has stopped.");
+    println!("\n * Server has stopped.");
     Ok(())
 }
+
