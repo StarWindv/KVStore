@@ -4,6 +4,7 @@
 
 ![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Rust Version](https://img.shields.io/badge/rust-1.85%2B-orange)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/StarWindv/Wind-KVStore)
 
 Wind-KVStore 是一个轻量级、高效且持久的键值存储引擎，采用 Rust 实现。项目结合了高性能存储引擎、用户友好的命令行界面和网络服务器，适用于需要本地持久化存储的场景。
 
